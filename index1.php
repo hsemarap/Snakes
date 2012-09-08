@@ -1,7 +1,7 @@
 <html>
 <head>
-<script src="jquery.js" type="text/javascript"></script>
-<script src="ocanvas.js" type="text/javascript"></script>
+<script src="javascript/jquery.js" type="text/javascript"></script>
+<script src="javascript/ocanvas.js" type="text/javascript"></script>
 
 <script>
 var maze=new Array(100);
@@ -38,7 +38,7 @@ var ctx=canvas.getContext('2d');
 var scorecanvas=document.getElementById('canvas');
 var scorectx=scorecanvas.getContext('2d');
 var scoreimg=new Image();
-scoreimg.src="board.png";
+scoreimg.src="images/board.png";
 scoreimg.onload=function(){
 ctx.drawImage(scoreimg,525,115);
 };
@@ -49,7 +49,7 @@ var snake,tempsnake,food=[],bfood=[];
 food.push({x: 0, y:0});
 bfood.push({x: 0, y:0 ,type:1});
 var snakeinterval;
-<?php //include 'level1.js';?>
+<?php //include 'javascript/level1.js';?>
 function startgame(){
 d=right;
 makesnake();
@@ -112,12 +112,11 @@ $("#speed").mouseup(function(){
 	var snakeinterval=setInterval(fillSnake, speedx*100+5);
 	});
 	function makefood(){
-	var tx1=food.x,ty1=food.y;
 	food.x=Math.round(Math.random()*(w-cw)/cw), 
 	food.y=Math.round(Math.random()*(h-cw)/cw), 
 
 		console.log(food.x+' '+food.y);
-		if(((food.x+1<=nx)&&(food.x-1>=nx) && (food.y+1<=ny)||(food.y-1>=ny))||collision(food.x,food.y,snake)||ty1==food.y||tx1==food.x)
+		if(food.x==nx && food.y==ny)
 		makefood();
 		
 		for (var i = 0; i < 50; i++)
@@ -129,15 +128,14 @@ makefood();
 	return;
 	}
 	function makebonusfood(){
-	var tx=bfood.x,ty=bfood.y;
 	bfood.x=Math.round(Math.random()*(w-cw)/cw), 
 	bfood.y=Math.round(Math.random()*(h-cw)/cw), 
 	//bfood.type=Math.floor((Math.random()*3)+1);
 	bfood.type=1;
 		//console.log(food.x+' '+food.y);
-		if(((bfood.x+1<=nx)&&(bfood.x-1>=nx) && (bfood.y+1<=ny)||(bfood.y-1>=ny))||collision(bfood.x,bfood.y,snake)||ty==bfood.y||tx==bfood.x)
+		if(bfood.x==nx && bfood.y==ny)
 		makebonusfood();
-	return;
+	
 	}
 	var bfoodtime=true;
 	if(bfoodtime)
@@ -180,7 +178,7 @@ function blinkme(){
 setInterval(blinker,500);
 }
 var imag=new Image()
-imag.src='l1.png';
+imag.src='images/l1.png';
 function fillSnake()
 	{
 	
@@ -312,7 +310,7 @@ function mazecollision(x, y, a)
 	{
 		for (var i = 0; i < 50; i++)
 for (var j = 0; j < 100; j++)
-if(maze[i][j]==1&&(i*2+1<=x && i*2+2>=x )&&(j*2+1==y|| j*2+2>=y-1 && j*2+1<=y+1)) {return true;}
+if(maze[i][j]==1&&(i*2==x || i*2==x-1 || i*2==x+1 )&&(j*2==y|| j*2==y-1 || j*2==y+1)) {return true;}
 		return false;
 	}
 	function showmaze(){
