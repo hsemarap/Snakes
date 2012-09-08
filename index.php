@@ -1,384 +1,362 @@
-<?php
+<html>
+<head>
+<script src="jquery.js" type="text/javascript"></script>
+<script src="ocanvas.js" type="text/javascript"></script>
 
-/**
- * This sample app is provided to kickstart your experience using Facebook's
- * resources for developers.  This sample app provides examples of several
- * key concepts, including authentication, the Graph API, and FQL (Facebook
- * Query Language). Please visit the docs at 'developers.facebook.com/docs'
- * to learn more about the resources available to you
- */
-
-// Provides access to app specific values such as your app id and app secret.
-// Defined in 'AppInfo.php'
-require_once('AppInfo.php');
-
-// Enforce https on production
-if (substr(AppInfo::getUrl(), 0, 8) != 'https://' && $_SERVER['REMOTE_ADDR'] != '127.0.0.1') {
-  header('Location: https://'. $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-  exit();
-}
-
-// This provides access to helper functions defined in 'utils.php'
-require_once('utils.php');
-
-
-/*****************************************************************************
- *
- * The content below provides examples of how to fetch Facebook data using the
- * Graph API and FQL.  It uses the helper functions defined in 'utils.php' to
- * do so.  You should change this section so that it prepares all of the
- * information that you want to display to the user.
- *
- ****************************************************************************/
-
-require_once('sdk/src/facebook.php');
-
-$facebook = new Facebook(array(
-  'appId'  => AppInfo::appID(),
-  'secret' => AppInfo::appSecret(),
-  'sharedSession' => true,
-  'trustForwarded' => true,
-));
-
-$user_id = $facebook->getUser();
-if ($user_id) {
-  try {
-    // Fetch the viewer's basic information
-    $basic = $facebook->api('/me');
-  } catch (FacebookApiException $e) {
-    // If the call fails we check if we still have a user. The user will be
-    // cleared if the error is because of an invalid accesstoken
-    if (!$facebook->getUser()) {
-      header('Location: '. AppInfo::getUrl($_SERVER['REQUEST_URI']));
-      exit();
-    }
+<script>
+var maze=new Array(100);
+  for (var i = 0; i < 100; i++) {
+    maze[i] = new Array(100);
   }
+function level1(){
+for ( i = 10; i < 40; i++)
+{
+maze[i][15]=1;
+}
+for ( i = 10; i < 40; i++)
+{maze[i][16]=1;
+}
+for ( i = 10; i < 40; i++)
+{maze[i][35]=1;
+}/*
+for ( i = 10; i < 40; i++)
+{maze[i][34]=1;
+}
+for ( i = 0; i < 10; i++)
+{maze[i][0]=1;
+maze[i][1]=1;
+maze[i][2]=1;
+maze[i][3]=1;
+}*/
+}
+$(document).ready(function(){
 
-  // This fetches some things that you like . 'limit=*" only returns * values.
-  // To see the format of the data you are retrieving, use the "Graph API
-  // Explorer" which is at https://developers.facebook.com/tools/explorer/
-  $likes = idx($facebook->api('/me/likes?limit=4'), 'data', array());
 
-  // This fetches 4 of your friends.
-  $friends = idx($facebook->api('/me/friends?limit=4'), 'data', array());
 
-  // And this returns 16 of your photos.
-  $photos = idx($facebook->api('/me/photos?limit=16'), 'data', array());
+var canvas=document.getElementById('canvas');
+var ctx=canvas.getContext('2d');
+var scorecanvas=document.getElementById('canvas');
+var scorectx=scorecanvas.getContext('2d');
+var scoreimg=new Image();
+scoreimg.src="board.png";
+scoreimg.onload=function(){
+ctx.drawImage(scoreimg,525,115);
+};
+var w=1000,h=1000,nx,ny,score=0;
+var cw=10,left=0,up=1,right=2,down=3;
+var d;
+var snake,tempsnake,food=[],bfood=[];
+food.push({x: 0, y:0});
+bfood.push({x: 0, y:0 ,type:1});
+var snakeinterval;
+<?php //include 'level1.js';?>
+function startgame(){
+d=right;
+makesnake();
+food.x=5;food.y=35;
+makefood();
+ctx.fillStyle="#000000";
+	ctx.fillRect(0, 0, 500, 500);
+for (var i = 0; i < 100; i++)
+for (var j = 0; j < 100; j++)
+maze[i][j]=0;
 
-  // Here is an example of a FQL call that fetches all of your friends that are
-  // using this app
-  $app_using_friends = $facebook->api(array(
-    'method' => 'fql.query',
-    'query' => 'SELECT uid, name FROM user WHERE uid IN(SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 1'
-  ));
+//level1();
+for ( i = 10; i < 40; i++)
+{
+maze[i][15]=1;
+maze[i][16]=1;
+maze[i][35]=1;
+maze[i][34]=1;
+}
+showmaze();
+/*
+for ( i = 10; i < 40; i++)
+{
+}
+for ( i = 10; i < 40; i++)
+{
+}
+for ( i = 0; i < 10; i++)
+{maze[i][0]=1;
+maze[i][1]=1;
+maze[i][2]=1;
+maze[i][3]=1;
+}*/
+//maze=window.maze1;
+
+snakeinterval = setInterval(fillSnake,31);
 }
 
-// Fetch the basic info of the app that they are using
-$app_info = $facebook->api('/'. AppInfo::appID());
+startgame();
+function makesnake()
+	{
+		var length = 35; 
+		snake= []; tempsnake = [];
+		for(var i = length-1; i>=0; i--)
+		{
+						snake.push({x: i, y:25});
+						//tempsnake.push({x: i, y:0});
+		}
+		/*snake[0].x=0;
+		snake[0].y=25;*/
+	}
+speedx=document.getElementById('speed').value;
 
-$app_name = idx($app_info, 'name', '');
+	
+$("#speed").mouseup(function(){
+	defspeed=false;
+	startgame();
+	var speedx=10-document.getElementById('speed').value;
+	alert(speedx*100+50);
+	var snakeinterval=setInterval(fillSnake, speedx*100+5);
+	});
+	function makefood(){
+	food.x=Math.round(Math.random()*(w-cw)/cw), 
+	food.y=Math.round(Math.random()*(h-cw)/cw), 
 
-?>
-<!DOCTYPE html>
-<html xmlns:fb="http://ogp.me/ns/fb#" lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+		console.log(food.x+' '+food.y);
+		if(food.x==nx && food.y==ny)
+		makefood();
+		
+		for (var i = 0; i < 50; i++)
+for (var j = 0; j < 100; j++)
+if(maze[i][j]==1 && i==food.x && j==food.y )
+makefood();
 
-    <title><?php echo he($app_name); ?></title>
-    <link rel="stylesheet" href="stylesheets/screen.css" media="Screen" type="text/css" />
-    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" type="text/css" />
+		
+	return;
+	}
+	function makebonusfood(){
+	bfood.x=Math.round(Math.random()*(w-cw)/cw), 
+	bfood.y=Math.round(Math.random()*(h-cw)/cw), 
+	//bfood.type=Math.floor((Math.random()*3)+1);
+	bfood.type=1;
+		//console.log(food.x+' '+food.y);
+		if(bfood.x==nx && bfood.y==ny)
+		makebonusfood();
+	
+	}
+	var bfoodtime=true;
+	if(bfoodtime)
+	var bonusinterval=setInterval(makebonusfood,3000);
+var tnx,tny;
+var blink=1;
+function displayscore()
+{
+ctx.font="bold 30px verdana";
+ctx.drawImage(scoreimg,525,115);
+console.log(score%10);
 
-    <!--[if IEMobile]>
-    <link rel="stylesheet" href="mobile.css" media="screen" type="text/css"  />
-    <![endif]-->
+ctx.fillText(Math.floor(score/10000),575,250);
 
-    <!-- These are Open Graph tags.  They add meta data to your  -->
-    <!-- site that facebook uses when your content is shared     -->
-    <!-- over facebook.  You should fill these tags in with      -->
-    <!-- your data.  To learn more about Open Graph, visit       -->
-    <!-- 'https://developers.facebook.com/docs/opengraph/'       -->
-    <meta property="og:title" content="<?php echo he($app_name); ?>" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="<?php echo AppInfo::getUrl(); ?>" />
-    <meta property="og:image" content="<?php echo AppInfo::getUrl('/logo.png'); ?>" />
-    <meta property="og:site_name" content="<?php echo he($app_name); ?>" />
-    <meta property="og:description" content="My first app" />
-    <meta property="fb:app_id" content="<?php echo AppInfo::appID(); ?>" />
+ctx.fillText(Math.floor(score/1000-10*Math.floor(score/10000)),622,250);
 
-    <script type="text/javascript" src="/javascript/jquery-1.7.1.min.js"></script>
+ctx.fillText(Math.floor(score/100-10*Math.floor(score/1000)),665,250);
 
-    <script type="text/javascript">
-      function logResponse(response) {
-        if (console && console.log) {
-          console.log('The response was', response);
-        }
-      }
+ctx.fillText(Math.floor(score/10-10*Math.floor(score/100)),708,250);
+ctx.fillText("0",750,250);
+}
+function blinker(){
+if(blinkcolor=="white")
+			blinkcolor="green"
+			else
+			blinkcolor="white";
+for(var i = 0; i < snake.length; i++)
+		{
+			var c = snake[i];
+			
+			fillCell(c.x, c.y,blinkcolor);
+			
+			ctx.strokeStyle = "black";
+			ctx.stroke();
+			
+		}
+}
 
-      $(function(){
-        // Set up so we handle click on the buttons
-        $('#postToWall').click(function() {
-          FB.ui(
-            {
-              method : 'feed',
-              link   : $(this).attr('data-url')
-            },
-            function (response) {
-              // If response is null the user canceled the dialog
-              if (response != null) {
-                logResponse(response);
-              }
-            }
-          );
-        });
+function blinkme(){
+setInterval(blinker,500);
+}
+var imag=new Image()
+imag.src='l1.png';
+function fillSnake()
+	{
+	
+	
+	ctx.fillStyle="#000000";
+		ctx.fillRect(0, 0, 500, 500);
+		ctx.drawImage(imag,0,0);
+		ctx.strokeStyle = "black";
+		ctx.strokeRect(0, 0, w, h);
+	nx = snake[0].x;
+	ctx.fill();
+	ny = snake[0].y;
+	if(d == right) nx++;
+	else if(d == left) nx--;
+	else if(d == up) ny--;
+	else if(d == down) ny++;
+	
+	var gamemode="nob";
+	if(gamemode=="nob")
+	{
+	if(nx<0)
+	{
+	
+	nx--;//var t=snake.pop();t.x=nx;t.y=ny;tempsnake.unshift(tail);filltempSnake();
+	nx=nx+100-1;
+	}
+	if(nx>=99)
+	{
+	nx++;//var t=snake.pop();t.x=nx;t.y=ny;tempsnake.unshift(tail);filltempSnake();
+	nx=nx-100-1;
+	}
+	if(ny<0)
+	{
+	
+	ny--;//var t=snake.pop();t.x=nx;t.y=ny;tempsnake.unshift(tail);filltempSnake();
+	ny=ny+100-1;
+	}
+	if(ny>100)
+	{
+	ny++;//var t=snake.pop();t.x=nx;t.y=ny;tempsnake.unshift(tail);filltempSnake();
+	ny=ny-100-1;
+	}
+	}
+	else if(nx == -1 || nx == w/cw || ny == -1 || ny == h/cw || gamemode=="b")
+		{
+			
+			startgame();
+			return;
+		}
+	
+	
+if(collision(nx,ny,snake)||mazecollision(nx,ny,maze)){
+alert("GAME Over ");
+//blink();
+clearInterval(snakeinterval);
+clearInterval(bonusinterval);
+blinkme();
+}
+	if((nx == food.x || nx == food.x-1 || nx == food.x+1)&&( ny == food.y || ny == food.y+1 || ny == food.y-1))
+		{
+			var tail = {x: nx, y: ny};
+			score=score+50; 
+			makefood();
+		}
+		
+		else if((nx == bfood.x || nx == bfood.x-1 || nx == bfood.x+1)&&( ny == bfood.y || ny == bfood.y+1 || ny == bfood.y-1))
+		{
+			var tail = {x: nx, y: ny};
+			makebonusfood();
+			score=score+200;
+		}
+		else
+		{
+			var tail = snake.pop(); 
+			tail.x = nx; tail.y = ny;
+		}
+	snake.unshift(tail);
+	for(var i = 0; i < snake.length; i++)
+		{
+			var c = snake[i];
+			fillCell(c.x, c.y,"white");
+			/*if(blink==0)fillCell(c.x, c.y,"black");
+			if(blink>=1&&blink<5){fillCell(c.x, c.y,"white");blink++;}
+			if(blink==5){fillCell(c.x, c.y,"black");blink=blink+1;}
+			if(blink>=5){fillCell(c.x, c.y,"black");blink--;}*/
+		}
+		ctx.fillStyle="#000000";
+	
+		
+		fillCell(food.x,food.y,"#00F");
+		fillCell(bfood.x,bfood.y,"#f00");
+		displayscore();
+		
+		
+		
+	}
+	var blinkcolor="black";
 
-        $('#sendToFriends').click(function() {
-          FB.ui(
-            {
-              method : 'send',
-              link   : $(this).attr('data-url')
-            },
-            function (response) {
-              // If response is null the user canceled the dialog
-              if (response != null) {
-                logResponse(response);
-              }
-            }
-          );
-        });
+	function polygonizer(xcent,ycent)
+{
+var numberOfSides = 4,
+    size = 5,
+    Xcenter = xcent,
+    Ycenter = ycent;
 
-        $('#sendRequest').click(function() {
-          FB.ui(
-            {
-              method  : 'apprequests',
-              message : $(this).attr('data-message')
-            },
-            function (response) {
-              // If response is null the user canceled the dialog
-              if (response != null) {
-                logResponse(response);
-              }
-            }
-          );
-        });
-      });
-    </script>
+ctx.beginPath();
+ctx.moveTo (Xcenter +  size * Math.cos(0), Ycenter +  size *  Math.sin(0));          
 
-    <!--[if IE]>
-      <script type="text/javascript">
-        var tags = ['header', 'section'];
-        while(tags.length)
-          document.createElement(tags.pop());
-      </script>
-    <![endif]-->
-  </head>
-  <body>
-    <div id="fb-root"></div>
-    <script type="text/javascript">
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId      : '<?php echo AppInfo::appID(); ?>', // App ID
-          channelUrl : '//<?php echo $_SERVER["HTTP_HOST"]; ?>/channel.html', // Channel File
-          status     : true, // check login status
-          cookie     : true, // enable cookies to allow the server to access the session
-          xfbml      : true // parse XFBML
-        });
+for (var i = 1; i <= numberOfSides;i += 1) {
+    ctx.lineTo (Xcenter + size * Math.cos(i * 2 * Math.PI / numberOfSides), Ycenter + size * Math.sin(i * 2 * Math.PI / numberOfSides));
+}
 
-        // Listen to the auth.login which will be called when the user logs in
-        // using the Login button
-        FB.Event.subscribe('auth.login', function(response) {
-          // We want to reload the page now so PHP can read the cookie that the
-          // Javascript SDK sat. But we don't want to use
-          // window.location.reload() because if this is in a canvas there was a
-          // post made to this page and a reload will trigger a message to the
-          // user asking if they want to send data again.
-          window.location = window.location;
-        });
+ctx.strokeStyle = "#000000";
+ctx.lineWidth = 1;
+ctx.fillstyle="#000";
+ctx.fill();
+ctx.stroke();
+}
+function collision(x, y, a)
+	{
+		for(var i = 0; i < a.length; i++)
+		{
+			if(a[i].x == x && a[i].y == y)
+			 return true;
+		}
+		return false;
+	}
+function mazecollision(x, y, a)
+	{
+		for (var i = 0; i < 50; i++)
+for (var j = 0; j < 100; j++)
+if(maze[i][j]==1&&(i*2==x || i*2==x-1 || i*2==x+1 )&&(j*2==y|| j*2==y-1 || j*2==y+1)) {return true;}
+		return false;
+	}
+	function showmaze(){
+	for (var i = 0; i < 100; i++)
+for (var j = 0; j < 100; j++)
+if(maze[i][j]==1)
+{
+ctx.fillStyle="brown";
+ctx.rect(i*10,j*10,10,10);
+ctx.fill();
+}
+}
+	function fillCell(x, y,color1)
+	{
+		ctx.fillStyle = color1;
+	//	ctx.fillRect(x*cw, y*cw, cw, cw);
+		polygonizer((x*cw+cw)/2,(y*cw+cw)/2);
+		ctx.fill();
+		
+	}
+	$(document).keydown(function(e){
+		var key = e.which;
+		if(key == "37" && d != right) d = left;
+		else if(key == "38" && d != down) d = up;
+		else if(key == "39" && d != left) d = right;
+		else if(key == "40" && d != up) d = down;
+			})
+});
 
-        FB.Canvas.setAutoGrow();
-      };
+/* TO DO LIST 
+-->DOnt restart game on boundary, just continue from opp end*********
+-->BOnus food**************
+-->no food for 20 sec color to red*************
+-->no food for 30 sec game over************
+-->Normal food dies in 20 sec************
+-->Bonus Food in 10 sec
+-->Mazes
 
-      // Load the SDK Asynchronously
-      (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js";
-        fjs.parentNode.insertBefore(js, fjs);
-      }(document, 'script', 'facebook-jssdk'));
-    </script>
 
-    <header class="clearfix">
-      <?php if (isset($basic)) { ?>
-      <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
 
-      <div>
-        <h1>Welcome, <strong><?php echo he(idx($basic, 'name')); ?></strong></h1>
-        <p class="tagline">
-          This is your app
-          <a href="<?php echo he(idx($app_info, 'link'));?>" target="_top"><?php echo he($app_name); ?></a>
-        </p>
 
-        <div id="share-app">
-          <p>Share your app:</p>
-          <ul>
-            <li>
-              <a href="#" class="facebook-button" id="postToWall" data-url="<?php echo AppInfo::getUrl(); ?>">
-                <span class="plus">Post to Wall</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="facebook-button speech-bubble" id="sendToFriends" data-url="<?php echo AppInfo::getUrl(); ?>">
-                <span class="speech-bubble">Send Message</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="facebook-button apprequests" id="sendRequest" data-message="Test this awesome app">
-                <span class="apprequests">Send Requests</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <?php } else { ?>
-      <div>
-        <h1>Welcome</h1>
-        <div class="fb-login-button" data-scope="user_likes,user_photos"></div>
-      </div>
-      <?php } ?>
-    </header>
+*/
+</script>
+<!--<script src='level1.js' type='text/javascript'></script>-->
+</head>
 
-    <section id="get-started">
-      <p>Welcome to your Facebook app, running on <span>heroku</span>!</p>
-      <a href="https://devcenter.heroku.com/articles/facebook" target="_top" class="button">Learn How to Edit This App</a>
-    </section>
-
-    <?php
-      if ($user_id) {
-    ?>
-
-    <section id="samples" class="clearfix">
-      <h1>Examples of the Facebook Graph API</h1>
-
-      <div class="list">
-        <h3>A few of your friends</h3>
-        <ul class="friends">
-          <?php
-            foreach ($friends as $friend) {
-              // Extract the pieces of info we need from the requests above
-              $id = idx($friend, 'id');
-              $name = idx($friend, 'name');
-          ?>
-          <li>
-            <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
-              <?php echo he($name); ?>
-            </a>
-          </li>
-          <?php
-            }
-          ?>
-        </ul>
-      </div>
-
-      <div class="list inline">
-        <h3>Recent photos</h3>
-        <ul class="photos">
-          <?php
-            $i = 0;
-            foreach ($photos as $photo) {
-              // Extract the pieces of info we need from the requests above
-              $id = idx($photo, 'id');
-              $picture = idx($photo, 'picture');
-              $link = idx($photo, 'link');
-
-              $class = ($i++ % 4 === 0) ? 'first-column' : '';
-          ?>
-          <li style="background-image: url(<?php echo he($picture); ?>);" class="<?php echo $class; ?>">
-            <a href="<?php echo he($link); ?>" target="_top"></a>
-          </li>
-          <?php
-            }
-          ?>
-        </ul>
-      </div>
-
-      <div class="list">
-        <h3>Things you like</h3>
-        <ul class="things">
-          <?php
-            foreach ($likes as $like) {
-              // Extract the pieces of info we need from the requests above
-              $id = idx($like, 'id');
-              $item = idx($like, 'name');
-
-              // This display's the object that the user liked as a link to
-              // that object's page.
-          ?>
-          <li>
-            <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($item); ?>">
-              <?php echo he($item); ?>
-            </a>
-          </li>
-          <?php
-            }
-          ?>
-        </ul>
-      </div>
-
-      <div class="list">
-        <h3>Friends using this app</h3>
-        <ul class="friends">
-          <?php
-            foreach ($app_using_friends as $auf) {
-              // Extract the pieces of info we need from the requests above
-              $id = idx($auf, 'uid');
-              $name = idx($auf, 'name');
-          ?>
-          <li>
-            <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
-              <?php echo he($name); ?>
-            </a>
-          </li>
-          <?php
-            }
-          ?>
-        </ul>
-      </div>
-    </section>
-
-    <?php
-      }
-    ?>
-
-    <section id="guides" class="clearfix">
-      <h1>Learn More About Heroku &amp; Facebook Apps</h1>
-      <ul>
-        <li>
-          <a href="https://www.heroku.com/?utm_source=facebook&utm_medium=app&utm_campaign=fb_integration" target="_top" class="icon heroku">Heroku</a>
-          <p>Learn more about <a href="https://www.heroku.com/?utm_source=facebook&utm_medium=app&utm_campaign=fb_integration" target="_top">Heroku</a>, or read developer docs in the Heroku <a href="https://devcenter.heroku.com/" target="_top">Dev Center</a>.</p>
-        </li>
-        <li>
-          <a href="https://developers.facebook.com/docs/guides/web/" target="_top" class="icon websites">Websites</a>
-          <p>
-            Drive growth and engagement on your site with
-            Facebook Login and Social Plugins.
-          </p>
-        </li>
-        <li>
-          <a href="https://developers.facebook.com/docs/guides/mobile/" target="_top" class="icon mobile-apps">Mobile Apps</a>
-          <p>
-            Integrate with our core experience by building apps
-            that operate within Facebook.
-          </p>
-        </li>
-        <li>
-          <a href="https://developers.facebook.com/docs/guides/canvas/" target="_top" class="icon apps-on-facebook">Apps on Facebook</a>
-          <p>Let users find and connect to their friends in mobile apps and games.</p>
-        </li>
-      </ul>
-    </section>
-  </body>
-</html>
+<input type="range" step=3 name="points" id="speed" min="1" max="10" />
+<canvas id="canvas" width="850" height="500" style="border:7px solid"></canvas>
+<canvas id="scoreboard" width="750" height="750" ></canvas>
