@@ -1,7 +1,7 @@
 <html>
 <head>
-<script src="jquery.js" type="text/javascript"></script>
-<script src="ocanvas.js" type="text/javascript"></script>
+<script src="javascript/jquery.js" type="text/javascript"></script>
+<script src="javascript/ocanvas.js" type="text/javascript"></script>
 
 <script>
 var maze=new Array(100);
@@ -49,7 +49,7 @@ var snake,tempsnake,food=[],bfood=[];
 food.push({x: 0, y:0});
 bfood.push({x: 0, y:0 ,type:1});
 var snakeinterval;
-<?php //include 'level1.js';?>
+<?php //include 'javascript/level1.js';?>
 function startgame(){
 d=right;
 makesnake();
