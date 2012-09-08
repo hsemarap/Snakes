@@ -178,7 +178,7 @@ function blinkme(){
 setInterval(blinker,500);
 }
 var imag=new Image()
-imag.src='l1.png';
+imag.src='images/l1.png';
 function fillSnake()
 	{
 	
