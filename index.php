@@ -38,7 +38,7 @@ var ctx=canvas.getContext('2d');
 var scorecanvas=document.getElementById('canvas');
 var scorectx=scorecanvas.getContext('2d');
 var scoreimg=new Image();
-scoreimg.src="board.png";
+scoreimg.src="images/board.png";
 scoreimg.onload=function(){
 ctx.drawImage(scoreimg,525,115);
 };
