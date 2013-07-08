@@ -1,36 +1,41 @@
 <h1><center>Snakes</center></h1>
-
+<hr />
 <p>
-A Retro Themed Classical Snakes game Which Has some more improved Features
+A <b>Retro</b> Themed Classical Snakes game Which Has some more improved Features
 such as
-
-1)Bonus Food for Speed up.( evil food )
-Increases Speed of the Snake, hence increasing the difficulty 
+<br />
+<ol>
+<li>Bonus Food for Speed up.( evil food )<br/>
+Increases Speed of the Snake, hence increasing the difficulty <br/>
 level for the player for some time.
-
-2)Invisibility Bonus ( evil food ) 
-On picking up this food, the whole arena blacks out , leaving the
-snake stranded in a dark evil scenario with nothing but its head visible
-to the player, its now only based on the player's memory
-of the position of mazes, for him to guide it.Cant be more evil rite ?
-Dont worry, if the snake survives for a few moments it will escape it 
+</li>
+<li>Invisibility Bonus ( evil food ) <br/>
+On picking up this food, the whole arena blacks out , leaving the<br/>
+snake stranded in a dark evil scenario with nothing but its head visible<br/>
+to the player, its now only based on the player's memory<br/>
+of the position of mazes, for him to guide it.Cant be more evil rite ?<br/>
+Dont worry, if the snake survives for a few moments it will escape it <br/>
 and come back to the normal world.
-
-3)Magnet Bonus ( awesome food )
-Yes, You become a food magnet, just go near a food, if you are in
-a certain vicinity of the food, its taken up.But dont be too excited
+</li>
+<li>Magnet Bonus ( awesome food )<br/>
+Yes, You become a food magnet, just go near a food, if you are in<br/>
+a certain vicinity of the food, its taken up.But dont be too excited<br/>
 its just for some time.
-
-4)Food Rain ( awesome food )
-Just like mario's Bonus round, here we have a bonus food rain,
+</li>
+<li>Food Rain ( awesome food )<br/>
+Just like mario's Bonus round, here we have a bonus food rain,<br/>
 Eat em ALL
-
+</li>
+</ol>
+<br />
 And other rules follow
-1) Dont hit the walls ( seriously ?? isnt that obvious ? )
+<ol>
+<li> Dont hit the walls ( seriously ?? isnt that obvious ? )</li>
 
-2) To play use arrow keys up down left right ( duhh )
+<li> To play use arrow keys up down left right ( duhh )</li>
 
-3) 50 points for normal food
+<li> 50 points for normal food</li>
 
-4) 200 points for Bonus food
+<li> 200 points for Bonus food</li>
+</ol>
 </p>
