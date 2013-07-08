@@ -1,6 +1,6 @@
-Snakes
+<h1><center>Snakes</center></h1>
 
-
+<p>
 A Retro Themed Classical Snakes game Which Has some more improved Features
 such as
 
@@ -29,3 +29,8 @@ And other rules follow
 1) Dont hit the walls ( seriously ?? isnt that obvious ? )
 
 2) To play use arrow keys up down left right ( duhh )
+
+3) 50 points for normal food
+
+4) 200 points for Bonus food
+</p>
