@@ -1,6 +1,7 @@
-<body>
-<script src="games/snakes/javascript/jquery.js" type="text/javascript"></script>
-<script src="games/snakes/javascript/fbhelper.js" type="text/javascript"></script>
+<html>
+<head>
+<script src="javascript/jquery.js" type="text/javascript"></script>
+<script src="javascript/ocanvas.js" type="text/javascript"></script>
 
 <script>
 var level='level1';
@@ -23,9 +24,9 @@ var ctx=canvas.getContext('2d');
 var scorecanvas=document.getElementById('canvas');
 var scorectx=scorecanvas.getContext('2d');
 var scoreimg=new Image();
-scoreimg.src="games/snakes/images/board.png";
+scoreimg.src="images/board.png";
 scoreimg.onload=function(){
-//ctx.drawImage(scoreimg,525,115);
+ctx.drawImage(scoreimg,525,115);
 };
 var w=1000,h=990,nx,ny,score=0;
 document.getElementById('score').value=score;
@@ -44,7 +45,7 @@ ctx.rect(507,0,387,500);
 ctx.fill();
 ctx.drawImage(scoreimg,525,115);
 
-
+console.log(score%10);
 
 ctx.fillText(Math.floor(score/10000),575,250);
 
@@ -95,7 +96,7 @@ level='level1';
 ctx.fillStyle="#8ED6FF";
 ctx.rect(507,0,387,500);
 //ctx.fill();
-
+score=0;
 document.getElementById('score').value=score;
 
 displayscore();
@@ -125,9 +126,8 @@ food.x=5;food.y=35;
 //makefood();
 score=0;
 var menu=new Image();
-menu.src='games/snakes/images/menu.png';
+menu.src='images/menu.png';
 var mousePos=[];
-
 menu.onload=function(){ctx.drawImage(menu,0,0,500,500);
  
 // 303 -150         690 -150
@@ -138,91 +138,66 @@ menu.onload=function(){ctx.drawImage(menu,0,0,500,500);
 
 //	355 78			660 78
 //	355	142			660	142
-// link 1
-// 375  465			520  465
-// 375  488 		520	 488
-//link 2
-// 645  464			803  464
-// 637  488			803	 490
 var menuoption=0;
 var p = $("canvas");
 var position = p.position();
-canvas.onmousemove=function(e){
-var Xcoord=e.pageX-$("#wrapper").position().left+120;
-var Ycoord=e.pageY-$("#wrapper").position().top;
-// THIS ONE FOR CURSOR CHANGE ON HOVER ABOVE ALL OPTIONS
-if((Xcoord>=375&&Xcoord<=520&&Ycoord<=488&&Ycoord>=465&&menuoption==0)||(Xcoord>=637&&Xcoord<=803&&Ycoord<=488&&Ycoord>=465&&menuoption==0)||((Xcoord>=378&&Xcoord<=777&&Ycoord<=140&&Ycoord>=96)&&menuoption==0)||(Xcoord>=378&&Xcoord<=777&&Ycoord<=250&&Ycoord>=200&&menuoption==0)||(Xcoord>=400&&Xcoord<=760&&Ycoord<=390&&Ycoord>=333&&(menuoption==0)))
-{
-$(this).css( 'cursor', 'pointer' );
-}
-else
-$(this).css('cursor','auto');
-	};
 //$("#inst").text( "left: " + position.left + ", top: " + position.top );
 $(canvas).mouseup(function(e){
-var Xcoord=e.pageX-$("#wrapper").position().left+120;
-var Ycoord=e.pageY-$("#wrapper").position().top;
-// LINK AT BOTTOM LEFT
-if(Xcoord>=375&&Xcoord<=520&&Ycoord<=488&&Ycoord>=465&&menuoption==0)
-{
-window.open("https://www.facebook.com/pnkjkumarjha");
-}
-// LINK AT BOTTOM RIGHT	
-if(Xcoord>=637&&Xcoord<=803&&Ycoord<=488&&Ycoord>=465&&menuoption==0)
-{
-        window.open("https://www.facebook.com/pbornskater");
-}  
-// MENU CASE 1: INSTRUCTIONS
-	  if((Xcoord>=378&&Xcoord<=777&&Ycoord<=140&&Ycoord>=96)&&menuoption==0)
-{
-menuoption=1
-var instr=new Image();
-instr.src='games/snakes/images/inst.png';
-ctx.drawImage(instr,0,0);
+if(menuvisibile){
 
+      $('#inst').html(e.pageX +', '+ e.pageY+' '+menuoption);
+	  if((e.pageX>=378&&e.pageX<=777&&e.pageY<=140&&e.pageY>=96)&&menuoption<3)
+{
+var instr=new Image();
+instr.src='images/inst.png';
+ctx.drawImage(instr,0,0);
+$(canvas).mousedown(function(e){
+	if(menuoption==2)
+	{
+	ctx.drawImage(menu,0,0,500,500);
+	menuoption=0;
+	}
+	menuoption=2;
+	}	);
 	//alert(menuoption);
 
 }
-
-// MENU CASE 2: PLAY GAME
-if(Xcoord>=378&&Xcoord<=777&&Ycoord<=250&&Ycoord>=200&&menuoption==0)
-{
-menuoption=2;
-fbapi.gameStarted(4);
-startgame();
-}
-// MENU CASE 3: HIGH SCORES							//       Edit arrName (here and in blinkme function) array var with highscores    
-if(Xcoord>=400&&Xcoord<=760&&Ycoord<=390&&Ycoord>=333&&(menuoption==0))
+if(e.pageX>=378&&e.pageX<=777&&e.pageY<=250&&e.pageY>=200&&menuoption<=3)
 {
 menuoption=3;
-//var arrName = [{"rose", "daisy","orchid", "sunFlower","Lily"},{100,200,300,400,500}];
-var arrName=new Array(2);  
-arrName[0]=new Array(5);
-arrName[1]=new Array(5);
-arrName[0] = ["rose", "daisy","orchid", "sunFlower","Lily"];
-arrName[1] = [100,200,300,400,500];
-  var i = 150;
+startgame();
+}
+if(e.pageX>=400&&e.pageX<=760&&e.pageY<=390&&e.pageY>=333&&(menuoption>3||menuoption==0))
+{
+menuoption=4;
+var arrName = {"rose":"5", "daisy":"4",
+                   "orchid":"3", "sunFlower":"10",
+                   "Lily":"15"};
+    var i = 250;
 	ctx.fillStyle="rgba(255,255,255,0.7)";
 	ctx.fillRect(0,0,500,500);
 	ctx.fillStyle="black";
-	ctx.font="bold 25px verdana";
-	ctx.fillText("High Scores:",105,100);
-	var j=0;
-	
-    for (var k=0;k<arrName[0].length;k++) 
-	{
-		ctx.fillText(arrName[0][k]+"     "+arrName[1][k]+" pts",105,i);
-		i+=35;        
-    }
-	
-}
-   }); 
+	ctx.font="bold 30px verdana";
+	ctx.fillText("High Scores:",105,220);
+    for (var name in arrName) {
+ctx.fillText(name+"     "+arrName[name]+" pts",105,i);
+i+=35;        
+        }
+
 $(canvas).mousedown(function(e){
-	if(menuoption!=0&&menuoption!=2)
-	{ctx.drawImage(menu,0,0,500,500);
+	if(menuoption==5)
+	{
+	ctx.drawImage(menu,0,0,500,500);
 	menuoption=0;
+	alert(menuoption);
 	}
+	else
+	menuoption=5;
 	}	);
+
+}
+   }}); 
+
 };
 
 
@@ -233,7 +208,7 @@ if((mousePos.x>=303&&mousePos.x<=690&&mousePos.y>=-150&&mousePos.y<=-109))
 {
 
 var instr=new Image();
-instr.src='games/snakes/images/inst.png';
+instr.src='images/inst.png';
 ctx.drawImage(instr,0,0);
 }
 if(mousePos.x>=340&&mousePos.x<=658&&mousePos.y<=-2&&mousePos.y>=-45)
@@ -371,7 +346,7 @@ check=((food.y<=32 && food.y>=30) || (food.y<=70 && food.y>=68)) && (food.x<=80 
 	document.getElementById('spl').innerHTML='None';
 	snakeinterval=setInterval(fillSnake,31);
 	}
-	<?php //include 'games/snakes/javascript/redblack.js' ?>
+	<?php //include 'javascript/redblack.js' ?>
 
 
 var x=0.0,increaseflag=0,ctr=0;
@@ -425,25 +400,10 @@ bonusx[foodbonuscount]=xx;
 bonusy[foodbonuscount]=yy;
 
 foodb.push({x: xx, y:yy});
-//maze[xx][yy]=2;
+maze[xx][yy]=2;
 
 fillCell(xx,yy,"#00F");
-setTimeout(function(){
-
-/*
-//maze[xx][yy]=temp2;
-//foodb.pop();
-
-for(var te=0;te<foodb.length;te++)
-console.log('a');
-
-for(var q=0;q<bonusx.length;q++)
-if(bonusx[q]==xx)
-{
-bonusx[q]=-100;bonusy[q]=-100;
-}*/
-foodbonuscheck=false;
-},10000);
+setTimeout(function(){maze[xx][yy]=temp2;foodb.pop();foodbonuscheck=false;},10000);
 foodbonuscount++;
 }
 foodbonuscount=0;
@@ -518,102 +478,24 @@ for(var i = 0; i < snake.length; i++)
 		}
 }
 
-function blinkme(arrName){
+function blinkme(){
 setInterval(blinker,500);
 var gameove=new Image();
-gameove.src='games/snakes/images/over.png';
+gameove.src='images/over.png';
 ctx.font="bold 30px verdana";
-/*
-var arrName=new Array(2);
-arrName[0]=new Array(3);arrName[0]=new Array(3);
-arrName[0]=['a','b','c'];
-arrName[1]=[1,2,3];
-*/
+
 gameove.onload=function(){
-
-
-var postfeed=false;
-
-setTimeout(function(){
-
-var post=new Image();
-
-postfeed=true;
-
-post.src='games/snakes/images/publish.png';
-
-ctx.drawImage(post,0,0);
-
-$(canvas).mouseup(function(e){
-
-var posx=e.pageX-$("#wrapper").position().left+120;
-
-var posy=e.pageY-$("#wrapper").position().top;
-
-if(postfeed)
-
-	{
-
-		if(posy>35&&posy<72&&posx>743&&posx<888)
-
-		alert('a');
-
-		//fbapi.sendScore(score,4,"Can You Beat Me in Snakes at Festember 12 games??","I just scored "+score+" points in Snakes games!!");
-
-		// OR watever comes here to send score
-
-		else
-
-		if(posy>102&&posy<140&&posx>743&&posx<888)
-
-		{
-
-			ctx.fillStyle="black";
-
-ctx.drawImage(gameove,0,0);
-
-ctx.fillText("Your Score: "+score,105,215);
-
-var arrName=new Array(2);
-
-arrName[0]=new Array(5);
-
-arrName[1]=new Array(5);
-
-arrName[0] = ["rose", "daisy","orchid", "sunFlower","Lily"];
-
-arrName[1] = [100,200,300,400,500];
-
-    var i = 250;
-
-   for (var k=0;k<arrName[0].length;k++) 
-
-	{
-
-		ctx.fillText(arrName[0][k]+"     "+arrName[1][k]+" pts",105,i);
-
-		i+=35;        
-
-    }
-
-		}
-
-	}
-
-});
-
-
-
-},500);
 ctx.fillStyle="black";
 ctx.drawImage(gameove,0,0);
 ctx.fillText("Your Score: "+score,105,215);
+var arrName = {"rose":"5", "daisy":"4",
+                   "orchid":"3", "sunFlower":"10",
+                   "Lily":"15"};
     var i = 250;
-   for (var k=0;k<arrName[0].length;k++) 
-	{
-		ctx.fillText(arrName[0][k]+"     "+arrName[1][k]+" pts",105,i);
-		i+=35;        
-    }
+    for (var name in arrName) {
+ctx.fillText(name+"     "+arrName[name]+" pts",105,i);
+i+=35;        
+        }
 
 
 };
@@ -639,7 +521,6 @@ function bonusfunctions(){
 			document.getElementById('spl').innerHTML='Food bonus';
 			}
 			
-			
 }
 var levelchg=false;
 function levelchange(){
@@ -660,15 +541,14 @@ if(score>1500&&level=='level1')
 function fillSnake()
 	{
 	//Level creation 
-	
 if(level=='level1')
-{<?php include 'games/snakes/javascript/level1.js';?>
-imag.src='games/snakes/images/l1.jpg';
+{<?php include 'javascript/level1.js';?>
+imag.src='images/l1.jpg';
 }
 else
 if(level=='level2')
-{<?php include 'games/snakes/javascript/level2.js';?>
-imag.src='games/snakes/images/level2.png';
+{<?php include 'javascript/level2.js';?>
+imag.src='images/level2.png';
 }
 else
 if(level=='level3')
@@ -676,14 +556,14 @@ if(level=='level3')
 for(j=0;j<100;j++)
 for(i=0;i<100;i++)
 maze[i][j]=0;
-<?php include 'games/snakes/javascript/level3.js';?>
-imag.src='games/snakes/images/level3.jpg';
+<?php include 'javascript/level3.js';?>
+imag.src='images/level3.jpg';
 }
 else
 if(level=='fest')
 {
-<?php include 'games/snakes/javascript/levelFESTEMBER.js';?>
-imag.src='games/snakes/images/fest.jpg';
+<?php include 'javascript/levelFESTEMBER.js';?>
+imag.src='images/fest.jpg';
 }
 	
 	//ctx.fillStyle="#000000";
@@ -746,8 +626,8 @@ for (var i = 1; i < 9999; i++)
         window.clearInterval(i);
 clearInterval(snakeinterval);
 clearInterval(bonusinterval);
-fbapi.sendScore(parseInt(score),4,"Can you Beat me in Snakes at Festember 12 web site?","I just Scored "+score+" points in the Snakes game!!",function(arr){blinkme(arr);});
-//blinkme();
+blinkme();
+
 }
 
 var bonusmode=false;
@@ -759,56 +639,22 @@ if(nx >= food.x-15 && nx <= food.x+15&& ny <= food.y+15 && ny >= food.y-15 )
 			score=score+50; 
 			document.getElementById('score').value=score;
 			makefood();
-//			document.getElementById('bite').currentTime=0;
-//			document.getElementById('bite').play();displayscore();
+			document.getElementById('bite').currentTime=0;
+			document.getElementById('bite').play();displayscore();
 			document.getElementById('msg').innerHTML="magmode got u food";
 			setTimeout(function(){document.getElementById('msg').innerHTML="";},1000)
 			
 		}
 
 }
-if(foodcollision(nx,ny,foodb))
-			{
-			
-			for(var q=0;q<bonusx.length;q++)
-				if(nx==bonusx[q]&&ny==bonusy[q])
-				bonusx[q]=-4;bonusy[q]=-4;
-				bonusx[clearfoodx]=-4;bonusy[clearfoodx]=-4;var hit;
-				for(var q=0;q<bonusx.length;q++)
-				{
-				if(bonusy[q]+1>=ny&&bonusy[q]-1<=ny)
-				{
-bonusx[q]=-1;bonusy[q]=-1;
-
-}
-}
-var tail = {x: nx, y: ny};
-			score=score+50; 
-			
-			document.getElementById('score').value=score;
-			makefood();
-//			document.getElementById('bite').currentTime=0;
-//			document.getElementById('bite').play();displayscore();
-
-			}
-
-
 	if((nx == food.x || nx == food.x-1 || nx == food.x+1)&&( ny == food.y || ny == food.y+1 || ny == food.y-1)||foodcollision(nx,ny,foodb))
-	//if((nx == food.x || nx == food.x-1 || nx == food.x+1)&&( ny == food.y || ny == food.y+1 || ny == food.y-1))
 		{
 			if(foodcollision(nx,ny,foodb))
 			{
-			alert('a');
 			for(var q=0;q<bonusx.length;q++)
 				if(nx==bonusx[q]&&ny==bonusy[q])
 				bonusx[q]=-4;bonusy[q]=-4;
 				bonusx[clearfoodx]=-4;bonusy[clearfoodx]=-4;
-				for(var q=0;q<bonusx.length;q++)
-{
-bonusx[q]=-1;bonusy[q]=-1;
-alert(bonusx[q]+'a'+bonusy[q]);
-}
-
 			}
 			
 			
@@ -817,8 +663,8 @@ alert(bonusx[q]+'a'+bonusy[q]);
 			
 			document.getElementById('score').value=score;
 			makefood();
-//			document.getElementById('bite').currentTime=0;
-//			document.getElementById('bite').play();displayscore();
+			document.getElementById('bite').currentTime=0;
+			document.getElementById('bite').play();displayscore();
 			
 		}
 		
@@ -831,8 +677,8 @@ alert(bonusx[q]+'a'+bonusy[q]);
 			makebonusfood();
 			score=score+200;
 			document.getElementById('score').value=score;
-//			document.getElementById('bite').currentTime=0;
-//			document.getElementById('bite').play();displayscore();
+			document.getElementById('bite').currentTime=0;
+			document.getElementById('bite').play();displayscore();
 			bonusmode=true;
 			//console.log('a');
 					
@@ -876,14 +722,8 @@ alert(bonusx[q]+'a'+bonusy[q]);
 		if(foodbonuscheck)
 		for(var q=0;q<bonusx.length;q++)
 		//if(bonusx>0)
-		if(bonusx[q]>0)
-{		fillCell(bonusx[q],bonusy[q],"#00F");
-if(bonusx[q]<0)
-console.log(bonusx[q]+' '+bonusy[q]);
-}
+		fillCell(bonusx[q],bonusy[q],"#00F");
 		
-		
-	
 		/*for(i=24;i<62;i++)
 	fillCell(i,80,"snake");
 	for(i=78;i<88;i++)
@@ -969,38 +809,38 @@ var bodyalternate=0;
 		{if(d==right)
 		{
 		var i=new Image();
-		i.src='games/snakes/images/up.png';
+		i.src='images/up.png';
 		ctx.drawImage(i,x*5-10,y*5-9,30,30);
 		}
 		else if(d==left)
 		{
 		var i=new Image();
-		i.src='games/snakes/images/left.png';
+		i.src='images/left.png';
 		ctx.drawImage(i,x*5-7,y*5-9,30,30);
 		}
 		else if(d==up)
 		{
 		var i=new Image();
-		i.src='games/snakes/images/snake-u.png';
+		i.src='images/snake-u.png';
 		ctx.drawImage(i,x*5-9,y*5-10,30,30);
 		}
 		else 
 		{
 		var i=new Image();
-		i.src='games/snakes/images/down.png';
+		i.src='images/down.png';
 		ctx.drawImage(i,x*5-11,y*5-10,30,30);
 		}
 		}
 		else if(color1=="bonus")
 		{
 		var i=new Image();
-		i.src='games/snakes/images/303.gif';
+		i.src='images/303.gif';
 		ctx.drawImage(i,x*5,y*5,20,20);
 		}
 		else if(color1=="food1")
 		{
 		var i=new Image();
-		i.src='games/snakes/images/food.png';
+		i.src='images/food.png';
 		ctx.drawImage(i,x*5,y*5,13,13);
 		}
 		   else
@@ -1036,28 +876,26 @@ var bodyalternate=0;
 <!--<script src='level1.js' type='text/javascript'></script>-->
 <style>
 body{
-background-image:url('games/snakes/images/bg1.jpg');
+background-image:url('images/bg1.jpg');
 }
 </style>
-
-<br><br><br><br>
-<center>
-<div id='wrapper'><canvas id="canvas" width="850" height="500" style="border:7px solid"></canvas></div>
-</center>
-<div id='inst'></div>
+</head>
+<body>
+<center><canvas id="canvas" width="850" height="500" style="border:7px solid"></canvas></center>
+<div id='inst'>Instructions</div>
 <!--
 <input type="range" step=3 name="points" id="speed" min="1" max="10" />
 -->
-
 <center>Active Special Power::<b id='spl'>None</b><br /><b id='msg'></b></footer><a href=""><button>RESET</button></a></center>
 <footer><center>
 <audio controls="controls" id='theme' loop="loop" preload="auto">
-  <source src="games/snakes/music/theme.mp3" type="audio/mpeg" />
-<!--  <source src="games/snakes/music/theme.wav" type="audio/wav" /> -->
+  <source src="music/theme.mp3" type="audio/mpeg" />
+  <source src="music/theme.wav" type="audio/ogg" />
   Your browser does not support the audio element.
 </audio>
 <audio  id="bite" >
-<source src="games/snakes/music/bite.wav" type="audio/wav" />
+<source src="music/bite.wav" type="audio/wav" />
+<source src="music/bite.mp3" type="audio/mpeg" />
 Your browser does not support the audio element.
 </audio>
 
@@ -1065,3 +903,4 @@ Your browser does not support the audio element.
 
 <input type='text' style='visibility:hidden;' id='score' />
 </body>
+</html>

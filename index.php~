@@ -95,7 +95,7 @@ level='level1';
 ctx.fillStyle="#8ED6FF";
 ctx.rect(507,0,387,500);
 //ctx.fill();
-
+score=0;
 document.getElementById('score').value=score;
 
 displayscore();

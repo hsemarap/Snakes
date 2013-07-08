@@ -1,4 +1,5 @@
-<body>
+<html>
+<head>
 <script src="games/snakes/javascript/jquery.js" type="text/javascript"></script>
 <script src="games/snakes/javascript/fbhelper.js" type="text/javascript"></script>
 
@@ -95,7 +96,7 @@ level='level1';
 ctx.fillStyle="#8ED6FF";
 ctx.rect(507,0,387,500);
 //ctx.fill();
-
+score=0;
 document.getElementById('score').value=score;
 
 displayscore();
@@ -148,7 +149,7 @@ var menuoption=0;
 var p = $("canvas");
 var position = p.position();
 canvas.onmousemove=function(e){
-var Xcoord=e.pageX-$("#wrapper").position().left+120;
+var Xcoord=e.pageX-$("#wrapper").position().left;
 var Ycoord=e.pageY-$("#wrapper").position().top;
 // THIS ONE FOR CURSOR CHANGE ON HOVER ABOVE ALL OPTIONS
 if((Xcoord>=375&&Xcoord<=520&&Ycoord<=488&&Ycoord>=465&&menuoption==0)||(Xcoord>=637&&Xcoord<=803&&Ycoord<=488&&Ycoord>=465&&menuoption==0)||((Xcoord>=378&&Xcoord<=777&&Ycoord<=140&&Ycoord>=96)&&menuoption==0)||(Xcoord>=378&&Xcoord<=777&&Ycoord<=250&&Ycoord>=200&&menuoption==0)||(Xcoord>=400&&Xcoord<=760&&Ycoord<=390&&Ycoord>=333&&(menuoption==0)))
@@ -160,7 +161,7 @@ $(this).css('cursor','auto');
 	};
 //$("#inst").text( "left: " + position.left + ", top: " + position.top );
 $(canvas).mouseup(function(e){
-var Xcoord=e.pageX-$("#wrapper").position().left+120;
+var Xcoord=e.pageX-$("#wrapper").position().left;
 var Ycoord=e.pageY-$("#wrapper").position().top;
 // LINK AT BOTTOM LEFT
 if(Xcoord>=375&&Xcoord<=520&&Ycoord<=488&&Ycoord>=465&&menuoption==0)
@@ -188,7 +189,7 @@ ctx.drawImage(instr,0,0);
 if(Xcoord>=378&&Xcoord<=777&&Ycoord<=250&&Ycoord>=200&&menuoption==0)
 {
 menuoption=2;
-fbapi.gameStarted(4);
+//fbapi.gameStarted(4);
 startgame();
 }
 // MENU CASE 3: HIGH SCORES							//       Edit arrName (here and in blinkme function) array var with highscores    
@@ -518,96 +519,21 @@ for(var i = 0; i < snake.length; i++)
 		}
 }
 
-function blinkme(arrName){
+function blinkme(){
 setInterval(blinker,500);
 var gameove=new Image();
 gameove.src='games/snakes/images/over.png';
 ctx.font="bold 30px verdana";
-/*
-var arrName=new Array(2);
-arrName[0]=new Array(3);arrName[0]=new Array(3);
-arrName[0]=['a','b','c'];
-arrName[1]=[1,2,3];
-*/
+
 gameove.onload=function(){
-
-
-var postfeed=false;
-
-setTimeout(function(){
-
-var post=new Image();
-
-postfeed=true;
-
-post.src='games/snakes/images/publish.png';
-
-ctx.drawImage(post,0,0);
-
-$(canvas).mouseup(function(e){
-
-var posx=e.pageX-$("#wrapper").position().left+120;
-
-var posy=e.pageY-$("#wrapper").position().top;
-
-if(postfeed)
-
-	{
-
-		if(posy>35&&posy<72&&posx>743&&posx<888)
-
-		alert('a');
-
-		//fbapi.sendScore(score,4,"Can You Beat Me in Snakes at Festember 12 games??","I just scored "+score+" points in Snakes games!!");
-
-		// OR watever comes here to send score
-
-		else
-
-		if(posy>102&&posy<140&&posx>743&&posx<888)
-
-		{
-
-			ctx.fillStyle="black";
-
-ctx.drawImage(gameove,0,0);
-
-ctx.fillText("Your Score: "+score,105,215);
-
-var arrName=new Array(2);
-
-arrName[0]=new Array(5);
-
-arrName[1]=new Array(5);
-
-arrName[0] = ["rose", "daisy","orchid", "sunFlower","Lily"];
-
-arrName[1] = [100,200,300,400,500];
-
-    var i = 250;
-
-   for (var k=0;k<arrName[0].length;k++) 
-
-	{
-
-		ctx.fillText(arrName[0][k]+"     "+arrName[1][k]+" pts",105,i);
-
-		i+=35;        
-
-    }
-
-		}
-
-	}
-
-});
-
-
-
-},500);
 ctx.fillStyle="black";
 ctx.drawImage(gameove,0,0);
 ctx.fillText("Your Score: "+score,105,215);
+var arrName=new Array(2);
+arrName[0]=new Array(5);
+arrName[1]=new Array(5);
+arrName[0] = ["rose", "daisy","orchid", "sunFlower","Lily"];
+arrName[1] = [100,200,300,400,500];
     var i = 250;
    for (var k=0;k<arrName[0].length;k++) 
 	{
@@ -746,8 +672,8 @@ for (var i = 1; i < 9999; i++)
         window.clearInterval(i);
 clearInterval(snakeinterval);
 clearInterval(bonusinterval);
-fbapi.sendScore(parseInt(score),4,"Can you Beat me in Snakes at Festember 12 web site?","I just Scored "+score+" points in the Snakes game!!",function(arr){blinkme(arr);});
-//blinkme();
+blinkme();
+//fbapi.sendScore(score,4,blinkme);
 }
 
 var bonusmode=false;
@@ -759,8 +685,8 @@ if(nx >= food.x-15 && nx <= food.x+15&& ny <= food.y+15 && ny >= food.y-15 )
 			score=score+50; 
 			document.getElementById('score').value=score;
 			makefood();
-//			document.getElementById('bite').currentTime=0;
-//			document.getElementById('bite').play();displayscore();
+			document.getElementById('bite').currentTime=0;
+			document.getElementById('bite').play();displayscore();
 			document.getElementById('msg').innerHTML="magmode got u food";
 			setTimeout(function(){document.getElementById('msg').innerHTML="";},1000)
 			
@@ -787,8 +713,8 @@ var tail = {x: nx, y: ny};
 			
 			document.getElementById('score').value=score;
 			makefood();
-//			document.getElementById('bite').currentTime=0;
-//			document.getElementById('bite').play();displayscore();
+			document.getElementById('bite').currentTime=0;
+			document.getElementById('bite').play();displayscore();
 
 			}
 
@@ -817,8 +743,8 @@ alert(bonusx[q]+'a'+bonusy[q]);
 			
 			document.getElementById('score').value=score;
 			makefood();
-//			document.getElementById('bite').currentTime=0;
-//			document.getElementById('bite').play();displayscore();
+			document.getElementById('bite').currentTime=0;
+			document.getElementById('bite').play();displayscore();
 			
 		}
 		
@@ -831,8 +757,8 @@ alert(bonusx[q]+'a'+bonusy[q]);
 			makebonusfood();
 			score=score+200;
 			document.getElementById('score').value=score;
-//			document.getElementById('bite').currentTime=0;
-//			document.getElementById('bite').play();displayscore();
+			document.getElementById('bite').currentTime=0;
+			document.getElementById('bite').play();displayscore();
 			bonusmode=true;
 			//console.log('a');
 					
@@ -1040,6 +966,8 @@ background-image:url('games/snakes/images/bg1.jpg');
 }
 </style>
 
+</head>
+<body>
 <br><br><br><br>
 <center>
 <div id='wrapper'><canvas id="canvas" width="850" height="500" style="border:7px solid"></canvas></div>
@@ -1053,11 +981,12 @@ background-image:url('games/snakes/images/bg1.jpg');
 <footer><center>
 <audio controls="controls" id='theme' loop="loop" preload="auto">
   <source src="games/snakes/music/theme.mp3" type="audio/mpeg" />
-<!--  <source src="games/snakes/music/theme.wav" type="audio/wav" /> -->
+  <source src="games/snakes/music/theme.wav" type="audio/ogg" />
   Your browser does not support the audio element.
 </audio>
 <audio  id="bite" >
 <source src="games/snakes/music/bite.wav" type="audio/wav" />
+<source src="games/snakes/music/bite.mp3" type="audio/mpeg" />
 Your browser does not support the audio element.
 </audio>
 
@@ -1065,3 +994,4 @@ Your browser does not support the audio element.
 
 <input type='text' style='visibility:hidden;' id='score' />
 </body>
+</html>
