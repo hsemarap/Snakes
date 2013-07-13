@@ -2,7 +2,7 @@
 <hr />
 <p>
 A <b>Retro</b> Themed Classical Snakes game Which Has some more improved Features
-<img src='1.png' height='100px'  alt='Start page'/>
+<img src='1.png' height='200px'  alt='Start page'/>
 such as
 <br />
 <ol>
